@@ -210,7 +210,9 @@ func (k *KeeEntry) AddItem(wf *aw.Workflow) {
 		Subtitle(k.Username).
 		Copytext(k.Username).
 		Largetype(k.Username).
-		Var("username", k.Username). // 提供复制内容
+		UID(k.Title).
+		Arg(fmt.Sprintf("%s-%s", k.Username, k.Password)). // 自动输入账号密码
+		Var("username", k.Username).                       // 提供复制内容
 		Var("password", k.Password).
 		Valid(true)
 }

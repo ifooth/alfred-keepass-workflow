@@ -35,11 +35,21 @@
 			</dict>
 			<dict>
 				<key>destinationuid</key>
+				<string>84810067-82BE-472F-8A33-B42195EEBCFA</string>
+				<key>modifiers</key>
+				<integer>524288</integer>
+				<key>modifiersubtext</key>
+				<string>Paste password</string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
 				<string>10959D59-1882-4A39-A37C-F8D6705BB2E7</string>
 				<key>modifiers</key>
 				<integer>1048576</integer>
 				<key>modifiersubtext</key>
-				<string>Paste password</string>
+				<string>Paste username</string>
 				<key>vitoclose</key>
 				<false/>
 			</dict>
@@ -118,7 +128,7 @@ end theSplit</string>
 				<key>escaping</key>
 				<integer>102</integer>
 				<key>keyword</key>
-				<string>kp2</string>
+				<string>kp</string>
 				<key>queuedelaycustom</key>
 				<integer>3</integer>
 				<key>queuedelayimmediatelyinitially</key>
@@ -132,7 +142,7 @@ end theSplit</string>
 				<key>script</key>
 				<string>./alfred-keepass-workflow "{query}"</string>
 				<key>scriptargtype</key>
-				<integer>1</integer>
+				<integer>0</integer>
 				<key>scriptfile</key>
 				<string>./alfred-keepass-workflow "{query}"</string>
 				<key>subtext</key>
@@ -179,6 +189,25 @@ end theSplit</string>
 				<key>autopaste</key>
 				<true/>
 				<key>clipboardtext</key>
+				<string>{var:username}</string>
+				<key>ignoredynamicplaceholders</key>
+				<false/>
+				<key>transient</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.clipboard</string>
+			<key>uid</key>
+			<string>84810067-82BE-472F-8A33-B42195EEBCFA</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>autopaste</key>
+				<true/>
+				<key>clipboardtext</key>
 				<string>{var:password}</string>
 				<key>ignoredynamicplaceholders</key>
 				<false/>
@@ -200,9 +229,16 @@ end theSplit</string>
 		<key>10959D59-1882-4A39-A37C-F8D6705BB2E7</key>
 		<dict>
 			<key>xpos</key>
-			<real>370</real>
+			<real>365</real>
 			<key>ypos</key>
-			<real>250</real>
+			<real>355</real>
+		</dict>
+		<key>84810067-82BE-472F-8A33-B42195EEBCFA</key>
+		<dict>
+			<key>xpos</key>
+			<real>365</real>
+			<key>ypos</key>
+			<real>225</real>
 		</dict>
 		<key>AE8C0C35-6917-4F39-B4D1-17A5417B1F96</key>
 		<dict>
