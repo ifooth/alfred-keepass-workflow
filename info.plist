@@ -143,8 +143,6 @@ end theSplit</string>
 				<string>./alfred-keepass-workflow "{query}"</string>
 				<key>scriptargtype</key>
 				<integer>0</integer>
-				<key>scriptfile</key>
-				<string>./alfred-keepass-workflow "{query}"</string>
 				<key>subtext</key>
 				<string>Search for "{query}"</string>
 				<key>title</key>
@@ -281,7 +279,7 @@ github: https://github.com/ifooth/alfred-keepass-workflow</string>
 				<true/>
 			</dict>
 			<key>description</key>
-			<string></string>
+			<string>url with basic auth</string>
 			<key>label</key>
 			<string>KeePass DB URL</string>
 			<key>type</key>
@@ -302,7 +300,7 @@ github: https://github.com/ifooth/alfred-keepass-workflow</string>
 				<true/>
 			</dict>
 			<key>description</key>
-			<string></string>
+			<string>kdbx auth password</string>
 			<key>label</key>
 			<string>KeePass DB PWD</string>
 			<key>type</key>
