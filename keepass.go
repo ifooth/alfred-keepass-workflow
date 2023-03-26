@@ -192,10 +192,15 @@ func (k *Kee) Load(wf *aw.Workflow) {
 	}
 
 	if k.needReload {
-		if err := k.LoadEntries(); err != nil {
+		if err := k.LoadAndCache(); err != nil {
 			wf.FatalError(err)
 			return
 		}
+	}
+
+	if err := k.LoadEntries(); err != nil {
+		wf.FatalError(err)
+		return
 	}
 
 	for _, v := range k.Entries {
