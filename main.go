@@ -17,6 +17,9 @@ func init() {
 }
 
 func run(wf *aw.Workflow) {
+	kee := NewKee(GetKeepassURL(cfg), GetKesspassPwd(cfg))
+	kee.Load(wf)
+
 	args := wf.Args()
 	log.Printf("args: %s", wf.Args())
 
@@ -24,9 +27,6 @@ func run(wf *aw.Workflow) {
 		query := args[0]
 		wf.Filter(query)
 	}
-
-	kee := NewKee(GetKeepassURL(cfg), GetKesspassPwd(cfg))
-	kee.Load(wf)
 
 	if wf.IsEmpty() {
 		wf.WarnEmpty("No matching found", "")

@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -16,7 +18,12 @@ import (
 var client = resty.New()
 
 const (
-	cacheKey = "cached_kdbx.dat"
+	cacheKey    = "cached_kdbx.dat"
+	titleKey    = "Title"
+	usernameKey = "UserName"
+	passwordKey = "Password"
+	urlKey      = "URL"
+	notesKey    = "Notes"
 )
 
 // GetKeepassURL :
@@ -48,10 +55,11 @@ func GetKesspassPwd(cfg *aw.Config) string {
 
 // Kee
 type Kee struct {
-	dbPath       string
-	password     string
-	Entries      []*KeeEntry `json:"entries"`
-	LastModified time.Time   `json:"last_modified"`
+	dbPath        string
+	password      string
+	Entries       []*KeeEntry `json:"-"`
+	EncryptedData []byte      `json:"encrypted_data"`
+	LastModified  time.Time   `json:"last_modified"`
 }
 
 // NewKee
@@ -59,12 +67,12 @@ func NewKee(dbPath, password string) *Kee {
 	return &Kee{
 		dbPath:   dbPath,
 		password: password,
+		Entries:  []*KeeEntry{},
 	}
 }
 
 // CheckUpdate
 func (k *Kee) CheckDBUpdate() (time.Time, error) {
-	fmt.Println(k.dbPath, k.password)
 	resp, err := client.R().SetDoNotParseResponse(true).Head(k.dbPath)
 	if err != nil {
 		return time.Time{}, errors.Wrap(err, "http fetch")
@@ -84,6 +92,44 @@ func (k *Kee) CheckDBUpdate() (time.Time, error) {
 	}
 
 	return t, nil
+}
+
+// LoadEntries
+func (k *Kee) LoadEntries() error {
+	st := time.Now()
+	defer func() {
+		log.Printf("load entries durations: %s", time.Since(st))
+	}()
+
+	db := gokeepasslib.NewDatabase()
+	db.Credentials = gokeepasslib.NewPasswordCredentials(k.password)
+	if err := gokeepasslib.NewDecoder(bytes.NewBuffer(k.EncryptedData)).Decode(db); err != nil {
+		return err
+	}
+	db.UnlockProtectedEntries()
+
+	if len(db.Content.Root.Groups) > 0 {
+		k.LoadGroups(db.Content.Root.Groups)
+	}
+
+	return nil
+}
+
+// LoadGroups 递归查询
+func (k *Kee) LoadGroups(groups []gokeepasslib.Group) {
+	for _, group := range groups {
+		for _, entry := range group.Entries {
+			k.Entries = append(k.Entries, &KeeEntry{
+				Title:    entry.GetTitle(),
+				Group:    group.Name,
+				Username: entry.GetContent(usernameKey),
+				Password: entry.GetPassword(),
+			})
+		}
+		if len(group.Groups) > 0 {
+			k.LoadGroups(group.Groups)
+		}
+	}
 }
 
 // LoadOrStore
@@ -106,26 +152,13 @@ func (k *Kee) LoadAndCache() error {
 		return errors.Wrap(err, "http ParseTime")
 	}
 
-	db := gokeepasslib.NewDatabase()
-	db.Credentials = gokeepasslib.NewPasswordCredentials(k.password)
-	if err := gokeepasslib.NewDecoder(resp.RawBody()).Decode(db); err != nil {
+	data, err := ioutil.ReadAll(resp.RawBody())
+	if err != nil {
 		return err
 	}
 
-	entrys := make([]*KeeEntry, 0)
-	for _, group := range db.Content.Root.Groups {
-		for _, entry := range group.Entries {
-			entrys = append(entrys, &KeeEntry{
-				Title:    entry.GetTitle(),
-				Group:    group.Name,
-				Username: entry.GetContent("Username"),
-				Password: entry.GetPassword(),
-			})
-		}
-	}
-
 	k.LastModified = t
-	k.Entries = entrys
+	k.EncryptedData = data
 	wf.Cache.StoreJSON(cacheKey, k)
 	return nil
 }
@@ -138,16 +171,24 @@ func (k *Kee) Load(wf *aw.Workflow) {
 			wf.FatalError(err)
 			return
 		}
+	} else {
+		log.Printf("load from cache: %s", cacheKey)
 	}
+
 	lastModified, err := k.CheckDBUpdate()
 	if err != nil {
-		log.Printf("lastModified err: %s", err)
+		log.Printf("check db update err: %s", err)
 	}
-	if lastModified.Before(k.LastModified) {
+	if lastModified.After(k.LastModified) {
 		if err := k.LoadAndCache(); err != nil {
 			wf.FatalError(err)
 			return
 		}
+	}
+
+	if err := k.LoadEntries(); err != nil {
+		wf.FatalError(err)
+		return
 	}
 
 	for _, v := range k.Entries {
@@ -169,6 +210,7 @@ func (k *KeeEntry) AddItem(wf *aw.Workflow) {
 		Subtitle(k.Username).
 		Copytext(k.Username).
 		Largetype(k.Username).
-		Var("Password", k.Password). // 提供复制内容
+		Var("username", k.Username). // 提供复制内容
+		Var("password", k.Password).
 		Valid(true)
 }

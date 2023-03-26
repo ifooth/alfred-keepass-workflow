@@ -133,6 +133,9 @@ end theSplit</string>
 				<string>./alfred-keepass-workflow "{query}"</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
+				<key>scriptfile</key>
+				<string>./alfred-keepass-workflow "{query}"</string>
+				<key>subtext</key>
 				<string>Search for "{query}"</string>
 				<key>title</key>
 				<string>Search KeePass</string>

@@ -20,7 +20,7 @@ run:
 	export alfred_workflow_bundleid="com.ifooth.alfred-keepass-workflow" && \
 	export alfred_workflow_cache="./output/cache" && \
 	export alfred_workflow_data="./output/data" && \
-    go run main.go keepass.go
+    go run main.go keepass.go site
 
 .PHONY: build-workflow
 build-workflow: build
