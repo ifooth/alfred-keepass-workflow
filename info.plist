@@ -35,21 +35,21 @@
 			</dict>
 			<dict>
 				<key>destinationuid</key>
-				<string>84810067-82BE-472F-8A33-B42195EEBCFA</string>
-				<key>modifiers</key>
-				<integer>524288</integer>
-				<key>modifiersubtext</key>
-				<string>Paste password</string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-			<dict>
-				<key>destinationuid</key>
 				<string>10959D59-1882-4A39-A37C-F8D6705BB2E7</string>
 				<key>modifiers</key>
 				<integer>1048576</integer>
 				<key>modifiersubtext</key>
 				<string>Paste username</string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>84810067-82BE-472F-8A33-B42195EEBCFA</string>
+				<key>modifiers</key>
+				<integer>524288</integer>
+				<key>modifiersubtext</key>
+				<string>Paste password</string>
 				<key>vitoclose</key>
 				<false/>
 			</dict>
@@ -198,7 +198,7 @@ end theSplit</string>
 			<key>type</key>
 			<string>alfred.workflow.output.clipboard</string>
 			<key>uid</key>
-			<string>84810067-82BE-472F-8A33-B42195EEBCFA</string>
+			<string>10959D59-1882-4A39-A37C-F8D6705BB2E7</string>
 			<key>version</key>
 			<integer>3</integer>
 		</dict>
@@ -217,13 +217,17 @@ end theSplit</string>
 			<key>type</key>
 			<string>alfred.workflow.output.clipboard</string>
 			<key>uid</key>
-			<string>10959D59-1882-4A39-A37C-F8D6705BB2E7</string>
+			<string>84810067-82BE-472F-8A33-B42195EEBCFA</string>
 			<key>version</key>
 			<integer>3</integer>
 		</dict>
 	</array>
 	<key>readme</key>
-	<string>a alfred workflow for keepass</string>
+	<string># alfred-keepass-workflow
+a alfred workflow for keepass
+
+## Code
+github: https://github.com/ifooth/alfred-keepass-workflow</string>
 	<key>uidata</key>
 	<dict>
 		<key>10959D59-1882-4A39-A37C-F8D6705BB2E7</key>
@@ -231,14 +235,14 @@ end theSplit</string>
 			<key>xpos</key>
 			<real>365</real>
 			<key>ypos</key>
-			<real>355</real>
+			<real>225</real>
 		</dict>
 		<key>84810067-82BE-472F-8A33-B42195EEBCFA</key>
 		<dict>
 			<key>xpos</key>
-			<real>365</real>
+			<real>370</real>
 			<key>ypos</key>
-			<real>225</real>
+			<real>345</real>
 		</dict>
 		<key>AE8C0C35-6917-4F39-B4D1-17A5417B1F96</key>
 		<dict>
@@ -263,14 +267,50 @@ end theSplit</string>
 		</dict>
 	</dict>
 	<key>userconfigurationconfig</key>
-	<array/>
-	<key>variables</key>
-	<dict>
-		<key>KEEPASS_PWD</key>
-		<string></string>
-		<key>KEEPASS_URL</key>
-		<string></string>
-	</dict>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string></string>
+				<key>placeholder</key>
+				<string>kee https url</string>
+				<key>required</key>
+				<true/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string></string>
+			<key>label</key>
+			<string>KeePass DB URL</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>KEEPASS_URL</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string></string>
+				<key>placeholder</key>
+				<string>kee password</string>
+				<key>required</key>
+				<true/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string></string>
+			<key>label</key>
+			<string>KeePass DB PWD</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>KEEPASS_PWD</string>
+		</dict>
+	</array>
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
