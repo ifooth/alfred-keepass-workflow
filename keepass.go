@@ -15,15 +15,11 @@ import (
 	"github.com/tobischo/gokeepasslib/v3"
 )
 
-var client = resty.New()
+var client = resty.New().SetTimeout(time.Second * 5)
 
 const (
 	cacheKey    = "cached_kdbx.dat"
-	titleKey    = "Title"
 	usernameKey = "UserName"
-	passwordKey = "Password"
-	urlKey      = "URL"
-	notesKey    = "Notes"
 )
 
 // GetKeepassURL :
@@ -57,6 +53,7 @@ func GetKesspassPwd(cfg *aw.Config) string {
 type Kee struct {
 	dbPath        string
 	password      string
+	needReload    bool
 	Entries       []*KeeEntry `json:"-"`
 	EncryptedData []byte      `json:"encrypted_data"`
 	LastModified  time.Time   `json:"last_modified"`
@@ -72,33 +69,77 @@ func NewKee(dbPath, password string) *Kee {
 }
 
 // CheckUpdate
-func (k *Kee) CheckDBUpdate() (time.Time, error) {
+func (k *Kee) CheckDBUpdate() error {
+	st := time.Now()
+	defer func() {
+		log.Printf("check db update duration: %s", time.Since(st))
+	}()
+
 	resp, err := client.R().SetDoNotParseResponse(true).Head(k.dbPath)
 	if err != nil {
-		return time.Time{}, errors.Wrap(err, "http fetch")
+		return errors.Wrap(err, "http fetch")
 	}
 	if !resp.IsSuccess() {
-		return time.Time{}, fmt.Errorf("http resp is not a success, %s", resp.Status())
+		return fmt.Errorf("http resp is not a success, %s", resp.Status())
 	}
 
 	lastModified := resp.Header().Get("Last-Modified")
 	if lastModified == "" {
-		return time.Time{}, fmt.Errorf("lastModified is empty, %s", resp.Header())
+		return fmt.Errorf("lastModified is empty, %s", resp.Header())
 	}
 
 	t, err := http.ParseTime(lastModified)
 	if err != nil {
-		return time.Time{}, errors.Wrap(err, "http ParseTime")
+		return errors.Wrap(err, "http ParseTime")
 	}
 
-	return t, nil
+	k.needReload = t.After(k.LastModified)
+	log.Printf("check db head LastModified: %s > cached LastModified: %s, shoud reload: %t", t, k.LastModified, k.needReload)
+
+	return nil
+}
+
+// LoadOrStore
+func (k *Kee) LoadAndCache() error {
+	st := time.Now()
+	defer func() {
+		log.Printf("load and cache duration: %s", time.Since(st))
+	}()
+
+	resp, err := client.R().SetDoNotParseResponse(true).Get(k.dbPath)
+	if err != nil {
+		return errors.Wrap(err, "http fetch")
+	}
+	if !resp.IsSuccess() {
+		return fmt.Errorf("http resp is not a success, %s", resp.Status())
+	}
+
+	lastModified := resp.Header().Get("Last-Modified")
+	if lastModified == "" {
+		return fmt.Errorf("lastModified is empty, %s", resp.Header())
+	}
+
+	t, err := http.ParseTime(lastModified)
+	if err != nil {
+		return errors.Wrap(err, "http ParseTime")
+	}
+
+	data, err := ioutil.ReadAll(resp.RawBody())
+	if err != nil {
+		return err
+	}
+
+	k.LastModified = t
+	k.EncryptedData = data
+	wf.Cache.StoreJSON(cacheKey, k)
+	return nil
 }
 
 // LoadEntries
 func (k *Kee) LoadEntries() error {
 	st := time.Now()
 	defer func() {
-		log.Printf("load entries durations: %s", time.Since(st))
+		log.Printf("load entries duration: %s", time.Since(st))
 	}()
 
 	db := gokeepasslib.NewDatabase()
@@ -132,39 +173,9 @@ func (k *Kee) LoadGroups(groups []gokeepasslib.Group) {
 	}
 }
 
-// LoadOrStore
-func (k *Kee) LoadAndCache() error {
-	resp, err := client.R().SetDoNotParseResponse(true).Get(k.dbPath)
-	if err != nil {
-		return errors.Wrap(err, "http fetch")
-	}
-	if !resp.IsSuccess() {
-		return fmt.Errorf("http resp is not a success, %s", resp.Status())
-	}
-
-	lastModified := resp.Header().Get("Last-Modified")
-	if lastModified == "" {
-		return fmt.Errorf("lastModified is empty, %s", resp.Header())
-	}
-
-	t, err := http.ParseTime(lastModified)
-	if err != nil {
-		return errors.Wrap(err, "http ParseTime")
-	}
-
-	data, err := ioutil.ReadAll(resp.RawBody())
-	if err != nil {
-		return err
-	}
-
-	k.LastModified = t
-	k.EncryptedData = data
-	wf.Cache.StoreJSON(cacheKey, k)
-	return nil
-}
-
 // Load
 func (k *Kee) Load(wf *aw.Workflow) {
+	// 读取缓存数据
 	err := wf.Cache.LoadJSON(cacheKey, k)
 	if err != nil {
 		if err := k.LoadAndCache(); err != nil {
@@ -175,20 +186,16 @@ func (k *Kee) Load(wf *aw.Workflow) {
 		log.Printf("load from cache: %s", cacheKey)
 	}
 
-	lastModified, err := k.CheckDBUpdate()
-	if err != nil {
+	// 检测是否最新
+	if err := k.CheckDBUpdate(); err != nil {
 		log.Printf("check db update err: %s", err)
 	}
-	if lastModified.After(k.LastModified) {
-		if err := k.LoadAndCache(); err != nil {
+
+	if k.needReload {
+		if err := k.LoadEntries(); err != nil {
 			wf.FatalError(err)
 			return
 		}
-	}
-
-	if err := k.LoadEntries(); err != nil {
-		wf.FatalError(err)
-		return
 	}
 
 	for _, v := range k.Entries {
