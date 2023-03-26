@@ -7,13 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetFile(t *testing.T) {
-	content, err := HTTPGetFile()
-	assert.NoError(t, err)
-	assert.Equal(t, true, len(content.Root.Groups) >= 1)
-}
-
-func TestCheckDBUpdate(t *testing.T) {
+func TestKeeLoad(t *testing.T) {
 	kee := NewKee(GetKeepassURL(cfg), GetKesspassPwd(cfg))
 	ok, err := kee.CheckDBUpdate()
 	assert.NoError(t, err)

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -47,33 +46,7 @@ func GetKesspassPwd(cfg *aw.Config) string {
 	return ""
 }
 
-// HTTPGetFile http 方式读取 keepass db
-func HTTPGetFile() (*gokeepasslib.DBContent, error) {
-	url := GetKeepassURL(cfg)
-	resp, err := client.R().SetDoNotParseResponse(true).Get(url)
-	if err != nil {
-		return nil, errors.Wrap(err, "http get")
-	}
-	if !resp.IsSuccess() {
-		return nil, fmt.Errorf("http resp is not a success, %s", resp.Status())
-	}
-
-	password := GetKesspassPwd(cfg)
-
-	db := gokeepasslib.NewDatabase()
-	db.Credentials = gokeepasslib.NewPasswordCredentials(password)
-	if err := gokeepasslib.NewDecoder(resp.RawBody()).Decode(db); err != nil {
-		return nil, err
-	}
-
-	_, err = json.Marshal(db.Content)
-	fmt.Println(err)
-	db.Content.Root.Groups[0].Entries[0].GetTitle()
-
-	db.UnlockProtectedEntries()
-	return db.Content, nil
-}
-
+// Kee
 type Kee struct {
 	dbPath       string
 	password     string
@@ -81,6 +54,7 @@ type Kee struct {
 	LastModified time.Time   `json:"last_modified"`
 }
 
+// NewKee
 func NewKee(dbPath, password string) *Kee {
 	return &Kee{
 		dbPath:   dbPath,
