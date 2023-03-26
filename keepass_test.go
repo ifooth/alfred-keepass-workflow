@@ -7,7 +7,7 @@ import (
 )
 
 func TestGetFile(t *testing.T) {
-	content, err := HTTPGetFile(GetKeepassURL(nil), GetKesspassPwd(nil))
+	content, err := HTTPGetFile()
 	assert.NoError(t, err)
 	assert.Equal(t, true, len(content.Root.Groups) >= 1)
 }

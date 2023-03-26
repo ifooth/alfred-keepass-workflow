@@ -40,8 +40,25 @@ func GetKesspassPwd(cfg *aw.Config) string {
 	return ""
 }
 
+type KeeEntry struct {
+	title    string
+	group    string
+	username string
+	password string
+}
+
+func (k *KeeEntry) AddItem(wf *aw.Workflow) {
+	wf.NewItem(k.title).
+		Subtitle(k.username).
+		Copytext(k.username).
+		Largetype(k.username).
+		Var("Password", k.password). // 提供复制内容
+		Valid(true)
+}
+
 // HTTPGetFile http 方式读取 keepass db
-func HTTPGetFile(url string, password string) (*gokeepasslib.DBContent, error) {
+func HTTPGetFile() (*gokeepasslib.DBContent, error) {
+	url := GetKeepassURL(cfg)
 	resp, err := client.R().SetDoNotParseResponse(true).Get(url)
 	if err != nil {
 		return nil, errors.Wrap(err, "http get")
@@ -50,6 +67,8 @@ func HTTPGetFile(url string, password string) (*gokeepasslib.DBContent, error) {
 		return nil, fmt.Errorf("http resp is not a success, %s", resp.Status())
 	}
 
+	password := GetKesspassPwd(cfg)
+
 	db := gokeepasslib.NewDatabase()
 	db.Credentials = gokeepasslib.NewPasswordCredentials(password)
 	if err := gokeepasslib.NewDecoder(resp.RawBody()).Decode(db); err != nil {
@@ -57,6 +76,7 @@ func HTTPGetFile(url string, password string) (*gokeepasslib.DBContent, error) {
 	}
 
 	data, err := json.Marshal(db.Content)
+	db.Content.Root.Groups[0].Entries[0].GetTitle()
 	fmt.Println(len(data), err)
 
 	db.UnlockProtectedEntries()

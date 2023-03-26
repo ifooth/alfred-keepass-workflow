@@ -3,24 +3,16 @@
 <plist version="1.0">
 <dict>
 	<key>bundleid</key>
-	<string>com.ifooth.alfred-ssh-workflow</string>
+	<string></string>
+	<key>category</key>
+	<string>Tools</string>
 	<key>connections</key>
 	<dict>
-		<key>88D53AF4-C8CD-4511-8C0D-741BD7B3E185</key>
+		<key>F0B49231-F276-4AD2-A429-C7E5C6FDC0F3</key>
 		<array>
 			<dict>
 				<key>destinationuid</key>
-				<string>3F15125F-7584-4497-9806-1220CA7FFDDE</string>
-				<key>modifiers</key>
-				<integer>1048576</integer>
-				<key>modifiersubtext</key>
-				<string>Paste Host</string>
-				<key>vitoclose</key>
-				<false/>
-			</dict>
-			<dict>
-				<key>destinationuid</key>
-				<string>8532883E-3DA9-4CEE-A29D-9D6B2E490B41</string>
+				<string>FD0EBA4C-3CE6-45F9-A300-15B06FDF11CA</string>
 				<key>modifiers</key>
 				<integer>0</integer>
 				<key>modifiersubtext</key>
@@ -29,35 +21,82 @@
 				<false/>
 			</dict>
 		</array>
+		<key>FD0EBA4C-3CE6-45F9-A300-15B06FDF11CA</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>AE8C0C35-6917-4F39-B4D1-17A5417B1F96</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>10959D59-1882-4A39-A37C-F8D6705BB2E7</string>
+				<key>modifiers</key>
+				<integer>1048576</integer>
+				<key>modifiersubtext</key>
+				<string>Paste password</string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 	</dict>
 	<key>createdby</key>
-	<string>JoeLei</string>
+	<string></string>
 	<key>description</key>
 	<string></string>
 	<key>disabled</key>
 	<false/>
 	<key>name</key>
-	<string>SSHMgr</string>
+	<string>KeePass</string>
 	<key>objects</key>
 	<array>
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>autopaste</key>
-				<true/>
-				<key>clipboardtext</key>
-				<string>{var:Hostname}</string>
-				<key>ignoredynamicplaceholders</key>
+				<key>concurrently</key>
 				<false/>
-				<key>transient</key>
-				<false/>
+				<key>escaping</key>
+				<integer>68</integer>
+				<key>script</key>
+				<string>on run argv
+    set theQuery to item 1 of argv
+    set myArray to my theSplit(theQuery, "-")
+    set theUsername to item 1 of myArray
+    set thePassword to item 2 of myArray
+    tell application "System Events"	    keystroke theUsername	    keystroke tab	    keystroke thePassword
+        -- keystroke return    end tell
+end run
+
+on theSplit(theString, theDelimiter)
+		-- save delimiters to restore old settings
+		set oldDelimiters to AppleScript's text item delimiters
+		-- set delimiters to delimiter to be used
+		set AppleScript's text item delimiters to theDelimiter
+		-- create the array
+		set theArray to every text item of theString
+		-- restore the old setting
+		set AppleScript's text item delimiters to oldDelimiters
+		-- return the result
+		return theArray
+end theSplit</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>6</integer>
 			</dict>
 			<key>type</key>
-			<string>alfred.workflow.output.clipboard</string>
+			<string>alfred.workflow.action.script</string>
 			<key>uid</key>
-			<string>3F15125F-7584-4497-9806-1220CA7FFDDE</string>
+			<string>AE8C0C35-6917-4F39-B4D1-17A5417B1F96</string>
 			<key>version</key>
-			<integer>3</integer>
+			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -66,16 +105,14 @@
 				<false/>
 				<key>alfredfiltersresultsmatchmode</key>
 				<integer>0</integer>
-				<key>argumenttreatemptyqueryasnil</key>
-				<false/>
 				<key>argumenttrimmode</key>
 				<integer>0</integer>
 				<key>argumenttype</key>
 				<integer>0</integer>
 				<key>escaping</key>
-				<integer>68</integer>
+				<integer>0</integer>
 				<key>keyword</key>
-				<string>lg</string>
+				<string>kp</string>
 				<key>queuedelaycustom</key>
 				<integer>3</integer>
 				<key>queuedelayimmediatelyinitially</key>
@@ -85,45 +122,63 @@
 				<key>queuemode</key>
 				<integer>1</integer>
 				<key>runningsubtext</key>
-				<string>Searching for "{query}"</string>
+				<string>Search for "{query}"</string>
 				<key>script</key>
-				<string>./alfred-ssh-workflow "{query}"</string>
+				<string></string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string>/Users/joelei/IFOOTH/keepass-alfred/flow.py</string>
 				<key>subtext</key>
 				<string>Search for "{query}"</string>
 				<key>title</key>
-				<string>Search SSH Servers</string>
+				<string>Search KeePass</string>
 				<key>type</key>
-				<integer>0</integer>
+				<integer>8</integer>
 				<key>withspace</key>
 				<true/>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.input.scriptfilter</string>
 			<key>uid</key>
-			<string>88D53AF4-C8CD-4511-8C0D-741BD7B3E185</string>
+			<string>FD0EBA4C-3CE6-45F9-A300-15B06FDF11CA</string>
 			<key>version</key>
-			<integer>3</integer>
+			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>concurrently</key>
-				<false/>
-				<key>escaping</key>
-				<integer>68</integer>
-				<key>script</key>
-				<string>./iterm_ssh.js "{query}"</string>
-				<key>scriptargtype</key>
-				<integer>0</integer>
-				<key>type</key>
-				<integer>0</integer>
+				<key>argument</key>
+				<string>{query}</string>
+				<key>variables</key>
+				<dict>
+					<key>password</key>
+					<string></string>
+					<key>username</key>
+					<string></string>
+				</dict>
 			</dict>
 			<key>type</key>
-			<string>alfred.workflow.action.script</string>
+			<string>alfred.workflow.utility.argument</string>
 			<key>uid</key>
-			<string>8532883E-3DA9-4CEE-A29D-9D6B2E490B41</string>
+			<string>F0B49231-F276-4AD2-A429-C7E5C6FDC0F3</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>autopaste</key>
+				<true/>
+				<key>clipboardtext</key>
+				<string>{var:password}</string>
+				<key>transient</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.clipboard</string>
+			<key>uid</key>
+			<string>10959D59-1882-4A39-A37C-F8D6705BB2E7</string>
 			<key>version</key>
 			<integer>2</integer>
 		</dict>
@@ -132,38 +187,38 @@
 	<string></string>
 	<key>uidata</key>
 	<dict>
-		<key>3F15125F-7584-4497-9806-1220CA7FFDDE</key>
+		<key>10959D59-1882-4A39-A37C-F8D6705BB2E7</key>
 		<dict>
 			<key>xpos</key>
-			<integer>525</integer>
+			<integer>370</integer>
 			<key>ypos</key>
-			<integer>160</integer>
+			<integer>250</integer>
 		</dict>
-		<key>8532883E-3DA9-4CEE-A29D-9D6B2E490B41</key>
+		<key>AE8C0C35-6917-4F39-B4D1-17A5417B1F96</key>
 		<dict>
 			<key>xpos</key>
-			<integer>525</integer>
+			<integer>360</integer>
 			<key>ypos</key>
-			<integer>300</integer>
+			<integer>100</integer>
 		</dict>
-		<key>88D53AF4-C8CD-4511-8C0D-741BD7B3E185</key>
+		<key>F0B49231-F276-4AD2-A429-C7E5C6FDC0F3</key>
 		<dict>
 			<key>xpos</key>
-			<integer>155</integer>
+			<integer>40</integer>
 			<key>ypos</key>
-			<integer>210</integer>
+			<integer>120</integer>
+		</dict>
+		<key>FD0EBA4C-3CE6-45F9-A300-15B06FDF11CA</key>
+		<dict>
+			<key>xpos</key>
+			<integer>130</integer>
+			<key>ypos</key>
+			<integer>100</integer>
 		</dict>
 	</dict>
-	<key>variables</key>
-	<dict>
-		<key>config</key>
-		<string>~/.config/sshmgr/config.yml</string>
-	</dict>
-	<key>variablesdontexport</key>
-	<array/>
 	<key>version</key>
 	<string>1.0.0</string>
 	<key>webaddress</key>
-	<string>https://github.com/ifooth/alfred-ssh-workflow</string>
+	<string></string>
 </dict>
 </plist>
