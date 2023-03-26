@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"time"
 
 	aw "github.com/deanishe/awgo"
 )
@@ -26,12 +25,8 @@ func run(wf *aw.Workflow) {
 		wf.Filter(query)
 	}
 
-	db, err := HTTPGetFile()
-	if err != nil {
-		wf.FatalError(err)
-		return
-	}
-	log.Print(db)
+	kee := NewKee(GetKeepassURL(cfg), GetKesspassPwd(cfg))
+	kee.Load(wf)
 
 	if wf.IsEmpty() {
 		wf.WarnEmpty("No matching found", "")
@@ -43,11 +38,6 @@ func run(wf *aw.Workflow) {
 }
 
 func main() {
-	reload := func() ([]byte, error) {
-		return []byte{}, nil
-	}
-	wf.Cache.LoadOrStore("cachedb.kdbx", time.Second*5, reload)
-
 	wf.Run(func() {
 		run(wf)
 	})

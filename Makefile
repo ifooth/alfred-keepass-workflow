@@ -17,11 +17,10 @@ build:
 
 .PHONY: run
 run:
-	export alfred_workflow_bundleid="com.ifooth.alfred-ssh-workflow" && \
+	export alfred_workflow_bundleid="com.ifooth.alfred-keepass-workflow" && \
 	export alfred_workflow_cache="./output/cache" && \
 	export alfred_workflow_data="./output/data" && \
-	export config="./etc/config.yml" && \
-    go run main.go
+    go run main.go keepass.go
 
 .PHONY: build-workflow
 build-workflow: build
@@ -29,10 +28,9 @@ build-workflow: build
 	mkdir -p ./output/workflow && \
 	cd ./output/workflow && \
 	cp ../../info.plist . && \
-	cp ../../iterm_ssh.js . && \
 	cp ../../icon.png . && \
-	cp ../alfred-ssh-workflow . && \
-	zip sshmgr.alfredworkflow info.plist iterm_ssh.js icon.png alfred-ssh-workflow
+	cp ../alfred-keepass-workflow . && \
+	zip keepass.alfredworkflow info.plist icon.png alfred-keepass-workflow
 
 .PHONY: test
 test:
