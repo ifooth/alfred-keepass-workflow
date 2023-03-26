@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>bundleid</key>
-	<string></string>
+	<string>com.ifooth.alfred-keepass-workflow</string>
 	<key>category</key>
-	<string>Tools</string>
+	<string>Productivity</string>
 	<key>connections</key>
 	<dict>
 		<key>F0B49231-F276-4AD2-A429-C7E5C6FDC0F3</key>
@@ -46,9 +46,9 @@
 		</array>
 	</dict>
 	<key>createdby</key>
-	<string></string>
+	<string>joelei</string>
 	<key>description</key>
-	<string></string>
+	<string>a alfred workflow for keepass</string>
 	<key>disabled</key>
 	<false/>
 	<key>name</key>
@@ -68,8 +68,12 @@
     set myArray to my theSplit(theQuery, "-")
     set theUsername to item 1 of myArray
     set thePassword to item 2 of myArray
-    tell application "System Events"	    keystroke theUsername	    keystroke tab	    keystroke thePassword
-        -- keystroke return    end tell
+    tell application "System Events"
+	    keystroke theUsername
+	    keystroke tab
+	    keystroke thePassword
+        -- keystroke return
+    end tell
 end run
 
 on theSplit(theString, theDelimiter)
@@ -105,14 +109,16 @@ end theSplit</string>
 				<false/>
 				<key>alfredfiltersresultsmatchmode</key>
 				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<false/>
 				<key>argumenttrimmode</key>
 				<integer>0</integer>
 				<key>argumenttype</key>
 				<integer>0</integer>
 				<key>escaping</key>
-				<integer>0</integer>
+				<integer>102</integer>
 				<key>keyword</key>
-				<string>kp</string>
+				<string>kp2</string>
 				<key>queuedelaycustom</key>
 				<integer>3</integer>
 				<key>queuedelayimmediatelyinitially</key>
@@ -124,17 +130,14 @@ end theSplit</string>
 				<key>runningsubtext</key>
 				<string>Search for "{query}"</string>
 				<key>script</key>
-				<string></string>
+				<string>./alfred-keepass-workflow "{query}"</string>
 				<key>scriptargtype</key>
 				<integer>1</integer>
-				<key>scriptfile</key>
-				<string>/Users/joelei/IFOOTH/keepass-alfred/flow.py</string>
-				<key>subtext</key>
 				<string>Search for "{query}"</string>
 				<key>title</key>
 				<string>Search KeePass</string>
 				<key>type</key>
-				<integer>8</integer>
+				<integer>0</integer>
 				<key>withspace</key>
 				<true/>
 			</dict>
@@ -143,13 +146,15 @@ end theSplit</string>
 			<key>uid</key>
 			<string>FD0EBA4C-3CE6-45F9-A300-15B06FDF11CA</string>
 			<key>version</key>
-			<integer>2</integer>
+			<integer>3</integer>
 		</dict>
 		<dict>
 			<key>config</key>
 			<dict>
 				<key>argument</key>
 				<string>{query}</string>
+				<key>passthroughargument</key>
+				<false/>
 				<key>variables</key>
 				<dict>
 					<key>password</key>
@@ -172,6 +177,8 @@ end theSplit</string>
 				<true/>
 				<key>clipboardtext</key>
 				<string>{var:password}</string>
+				<key>ignoredynamicplaceholders</key>
+				<false/>
 				<key>transient</key>
 				<false/>
 			</dict>
@@ -180,45 +187,56 @@ end theSplit</string>
 			<key>uid</key>
 			<string>10959D59-1882-4A39-A37C-F8D6705BB2E7</string>
 			<key>version</key>
-			<integer>2</integer>
+			<integer>3</integer>
 		</dict>
 	</array>
 	<key>readme</key>
-	<string></string>
+	<string>a alfred workflow for keepass</string>
 	<key>uidata</key>
 	<dict>
 		<key>10959D59-1882-4A39-A37C-F8D6705BB2E7</key>
 		<dict>
 			<key>xpos</key>
-			<integer>370</integer>
+			<real>370</real>
 			<key>ypos</key>
-			<integer>250</integer>
+			<real>250</real>
 		</dict>
 		<key>AE8C0C35-6917-4F39-B4D1-17A5417B1F96</key>
 		<dict>
 			<key>xpos</key>
-			<integer>360</integer>
+			<real>360</real>
 			<key>ypos</key>
-			<integer>100</integer>
+			<real>100</real>
 		</dict>
 		<key>F0B49231-F276-4AD2-A429-C7E5C6FDC0F3</key>
 		<dict>
 			<key>xpos</key>
-			<integer>40</integer>
+			<real>40</real>
 			<key>ypos</key>
-			<integer>120</integer>
+			<real>120</real>
 		</dict>
 		<key>FD0EBA4C-3CE6-45F9-A300-15B06FDF11CA</key>
 		<dict>
 			<key>xpos</key>
-			<integer>130</integer>
+			<real>130</real>
 			<key>ypos</key>
-			<integer>100</integer>
+			<real>100</real>
 		</dict>
 	</dict>
+	<key>userconfigurationconfig</key>
+	<array/>
+	<key>variables</key>
+	<dict>
+		<key>KEEPASS_PWD</key>
+		<string></string>
+		<key>KEEPASS_URL</key>
+		<string></string>
+	</dict>
+	<key>variablesdontexport</key>
+	<array/>
 	<key>version</key>
 	<string>1.0.0</string>
 	<key>webaddress</key>
-	<string></string>
+	<string>https://github.com/ifooth/alfred-keepass-workflow</string>
 </dict>
 </plist>

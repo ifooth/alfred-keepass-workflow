@@ -29,8 +29,9 @@ build-workflow: build
 	cd ./output/workflow && \
 	cp ../../info.plist . && \
 	cp ../../icon.png . && \
+	cp ../../auto_input.applescript . && \
 	cp ../alfred-keepass-workflow . && \
-	zip keepass.alfredworkflow info.plist icon.png alfred-keepass-workflow
+	zip KeePass.alfredworkflow info.plist icon.png auto_input.applescript alfred-keepass-workflow
 
 .PHONY: test
 test:
